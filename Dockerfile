@@ -14,10 +14,7 @@ EXPOSE 8080
 ADD go/ $GOPATH
 RUN chown -R 1001:1001 $GOPATH
 RUN mkdir /opt/deployments; chown 1001:1001 /opt/deployments
-RUN mkdir /templates; chown 1001:1001 /templates
 USER 1001
-RUN sed -i "s/localhost/$HOST/g" $GOPATH/src/github.com/rhtps/gochat/main.go
 RUN cd $GOPATH/src/github.com/rhtps/gochat/; go clean; go build
 RUN cp $GOPATH/src/github.com/rhtps/gochat/gochat /opt/deployments
-RUN cp -rf $GOPATH/src/github.com/rhtps/gochat/templates/* /templates
 ENTRYPOINT ["/opt/deployments/gochat", "-addr=0.0.0.0:8080"]
