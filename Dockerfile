@@ -20,7 +20,13 @@ RUN yum clean all && \
 RUN useradd 1001
 EXPOSE 8080
 
-RUN go get github.com/rhtps/gochat
+RUN go get github.com/tools/godep && \
+    mkdir -p $GOPATH/src/github.com/rhtps && \
+    cd $GOPATH/src/github.com/rhtps && \
+    git clone https://github.com/rhtps/gochat.git && \
+    cd $GOPATH/src/github.com/rhtps/gochat && \
+    godep restore github.com/rhtps/gochat && \
+    go get github.com/rhtps/gochat
 RUN chown -R 1001:1001 $GOPATH
 USER 1001
 
