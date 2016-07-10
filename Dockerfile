@@ -2,27 +2,34 @@ FROM rhel7:latest
 
 MAINTAINER Kenneth D. Evensen <kevensen@redhat.com>
 
-ENV GOPATH=/opt/golang/ 
-ENV PATH=$PATH:$GOPATH/bin
+ENV GOPATH=/opt/gopath/
+ENV GOBIN=$GOPATH/bin
+ENV GOROOT=/opt/go 
+ENV PATH=$PATH:/opt/go/bin:$GOBIN
 
 RUN yum clean all && \
+    yum update -y && \
     yum install -y --setopt=tsflags=nodocs \
                    --disablerepo='*' \
                    --enablerepo='rhel-7-server-rpms' \
-                   --enablerepo='rhel-7-server-extras-rpms' \
                    --enablerepo='rhel-7-server-optional-rpms' \
-                   golang \
-                   golang-bin \
-                   git-bzr bzr && \
+                   git-bzr \
+                   bzr \
+                   tar && \
     yum clean all && \ 
     rm -rf /var/cache/yum/*
 
 RUN useradd 1001
 EXPOSE 8080
 
+RUN cd /opt && \
+    curl -o go1.6.2.linux-amd64.tar.gz \
+    https://storage.googleapis.com/golang/go1.6.2.linux-amd64.tar.gz && \
+    tar -xvf go1.6.2.linux-amd64.tar.gz
+
 RUN go get -insecure github.com/rhtps/gochat
+
 RUN chown -R 1001:1001 $GOPATH
 USER 1001
 
-RUN cd $GOPATH/src/github.com/rhtps/gochat/; go install
 ENTRYPOINT ["gochat"]
