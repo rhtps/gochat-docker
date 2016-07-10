@@ -20,7 +20,7 @@ RUN yum clean all && \
 RUN useradd 1001
 EXPOSE 8080
 
-RUN go get github.com/rhtps/gochat
+RUN go get -insecure github.com/rhtps/gochat
 RUN chown -R 1001:1001 $GOPATH
 USER 1001
 
