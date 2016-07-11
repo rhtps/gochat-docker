@@ -8,7 +8,8 @@ ENV GOROOT=/opt/go
 ENV PATH=$PATH:/opt/go/bin:$GOBIN
 
 RUN yum clean all && \
-    yum update -y && \
+    yum update -y --disablerepo='*' \
+                  --enablerepo='rhel-7-server-rpms' && \
     yum install -y --setopt=tsflags=nodocs \
                    --disablerepo='*' \
                    --enablerepo='rhel-7-server-rpms' \
